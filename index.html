@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Gallery</title>
+    <style>
+      :root {
+        --bg: #f7f3ee;
+        --panel: #fffaf5;
+        --text: #1f1f1f;
+        --muted: #726a63;
+        --line: rgba(31, 31, 31, 0.08);
+        --shadow: 0 18px 35px rgba(0, 0, 0, 0.06);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 40px;
+      }
+
+      .brand {
+        font-size: 1.2rem;
+        letter-spacing: 0.2rem;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .nav {
+        display: flex;
+        gap: 22px;
+        color: var(--muted);
+        font-size: 0.85rem;
+        letter-spacing: 0.08rem;
+        text-transform: uppercase;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 36px;
+        align-items: center;
+        margin-bottom: 44px;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2.8rem, 5vw, 5rem);
+        line-height: 0.9;
+        margin: 0 0 18px;
+        font-weight: 700;
+        letter-spacing: -0.06em;
+      }
+
+      .hero-copy p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.04rem;
+        line-height: 1.7;
+        max-width: 580px;
+      }
+
+      .hero-image {
+        height: 540px;
+        border-radius: 26px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        background-size: cover;
+        background-position: center;
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+      }
+
+      .card .image {
+        height: 300px;
+        background-size: cover;
+        background-position: center;
+        background-color: #e8e2da;
+      }
+
+      .card .meta {
+        padding: 16px 18px 18px;
+      }
+
+      .card h2 {
+        margin: 0 0 6px;
+        font-size: 1rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 860px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-image {
+          height: 420px;
+        }
+
+        .gallery {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .nav {
+          display: none;
+        }
+
+        .gallery {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="brand">Food</div>
+        <nav class="nav">
+          <span>Gallery</span>
+          <span>Stories</span>
+          <span>About</span>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>Minimal bites. Maximum flavor.</h1>
+          <p>
+            A simple collection of random food moments, one fresh image at a time.
+          </p>
+        </div>
+        <div class="hero-image" id="heroImage"></div>
+      </section>
+
+      <section class="gallery" id="gallery"></section>
+    </div>
+
+    <script>
+      // Food image API: https://foodish-api.herokuapp.com/api/
+      // Returns random food images with various categories
+      const foodishApi = "https://foodish-api.herokuapp.com/api/images";
+      const cardCount = 9;
+
+      // Generate random food cards
+      async function loadGallery() {
+        const gallery = document.getElementById("gallery");
+        gallery.innerHTML = "";
+
+        for (let i = 0; i < cardCount; i++) {
+          const response = await fetch(foodishApi);
+          const data = await response.json();
+          const imageUrl = data.image;
+
+          const card = document.createElement("article");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="image" style="background-image: url('${imageUrl}');"></div>
+            <div class="meta">
+              <h2>Food</h2>
+              <p>Fresh and delicious.</p>
+            </div>
+          `;
+          gallery.appendChild(card);
+        }
+      }
+
+      // Load hero image
+      async function loadHeroImage() {
+        const response = await fetch(foodishApi);
+        const data = await response.json();
+        const heroImage = document.getElementById("heroImage");
+        heroImage.style.backgroundImage = `url('${data.image}')`;
+      }
+
+      // Initialize on page load
+      window.addEventListener("load", () => {
+        loadHeroImage();
+        loadGallery();
+      });
+    </script>
+  </body>
+</html>
