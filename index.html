@@ -12,17 +12,33 @@
         --muted: #726a63;
         --line: rgba(31, 31, 31, 0.08);
         --shadow: 0 18px 35px rgba(0, 0, 0, 0.06);
+        --chip: rgba(31, 31, 31, 0.04);
+        --button-text: #1f1f1f;
+        --overlay: rgba(17,17,17,0.7);
       }
 
-      * {
-        box-sizing: border-box;
+      body.dark {
+        --bg: #121212;
+        --panel: #1a1a1a;
+        --text: #f5f1ec;
+        --muted: #cfc3b8;
+        --line: rgba(255,255,255,0.08);
+        --shadow: 0 18px 35px rgba(0,0,0,0.35);
+        --chip: rgba(255,255,255,0.04);
+        --button-text: #f5f1ec;
+        --overlay: rgba(0,0,0,0.8);
       }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
 
       body {
         margin: 0;
         font-family: Arial, Helvetica, sans-serif;
         background: var(--bg);
         color: var(--text);
+        transition: background 0.25s ease, color 0.25s ease;
       }
 
       .page {
@@ -35,9 +51,10 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 16px;
         padding-bottom: 28px;
         border-bottom: 1px solid var(--line);
-        margin-bottom: 40px;
+        margin-bottom: 30px;
       }
 
       .brand {
@@ -45,6 +62,12 @@
         letter-spacing: 0.2rem;
         text-transform: uppercase;
         font-weight: 700;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
       }
 
       .nav {
@@ -56,12 +79,30 @@
         text-transform: uppercase;
       }
 
+      .button {
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--button-text);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        letter-spacing: 0.08rem;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+        background: var(--chip);
+      }
+
       .hero {
         display: grid;
         grid-template-columns: 1.1fr 0.9fr;
         gap: 36px;
         align-items: center;
-        margin-bottom: 44px;
+        margin-bottom: 28px;
       }
 
       .hero-copy h1 {
@@ -73,11 +114,17 @@
       }
 
       .hero-copy p {
-        margin: 0;
+        margin: 0 0 18px;
         color: var(--muted);
         font-size: 1.04rem;
         line-height: 1.7;
         max-width: 580px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
       }
 
       .hero-image {
@@ -87,6 +134,31 @@
         box-shadow: var(--shadow);
         background-size: cover;
         background-position: center;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 28px 0 22px;
+      }
+
+      .chip {
+        background: var(--chip);
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 9px 14px;
+        font-size: 0.72rem;
+        letter-spacing: 0.08rem;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+
+      .chip.active {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
       }
 
       .gallery {
@@ -100,6 +172,7 @@
         border: 1px solid var(--line);
         border-radius: 22px;
         overflow: hidden;
+        cursor: pointer;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
 
@@ -132,6 +205,62 @@
         font-size: 0.92rem;
       }
 
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: var(--overlay);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        z-index: 50;
+      }
+
+      .modal.open {
+        display: flex;
+      }
+
+      .modal-content {
+        width: min(900px, 100%);
+        background: var(--panel);
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+
+      .modal-image {
+        width: 100%;
+        height: 520px;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .modal-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 20px 20px;
+      }
+
+      .modal-info h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08rem;
+      }
+
+      .close-btn {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
       @media (max-width: 860px) {
         .hero {
           grid-template-columns: 1fr;
@@ -161,74 +290,217 @@
     <div class="page">
       <header>
         <div class="brand">Food</div>
-        <nav class="nav">
-          <span>Gallery</span>
-          <span>Stories</span>
-          <span>About</span>
-        </nav>
+
+        <div class="header-actions">
+          <nav class="nav">
+            <span>Gallery</span>
+            <span>Stories</span>
+            <span>About</span>
+          </nav>
+          <button class="button" id="themeToggle" type="button">Dark</button>
+        </div>
       </header>
 
       <section class="hero">
         <div class="hero-copy">
           <h1>Minimal bites. Maximum flavor.</h1>
           <p>
-            A simple collection of random food moments, one fresh image at a time.
+            A simple collection of food moments, curated for comfort, flavor, and good light.
           </p>
+          <div class="hero-actions">
+            <button class="button" id="refreshBtn" type="button">Shuffle</button>
+          </div>
         </div>
         <div class="hero-image" id="heroImage"></div>
       </section>
 
+      <div class="filters" id="filters" aria-label="Food category filters"></div>
       <section class="gallery" id="gallery"></section>
     </div>
 
+    <div class="modal" id="lightbox" aria-modal="true" role="dialog">
+      <div class="modal-content">
+        <div class="modal-image" id="modalImage"></div>
+        <div class="modal-info">
+          <h3 id="modalTitle">Food</h3>
+          <button class="close-btn" id="closeModal" aria-label="Close">×</button>
+        </div>
+      </div>
+    </div>
+
     <script>
-      const foodImages = [
-        "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=1200&q=80"
+      const foodItems = [
+        { title: "Brunch", category: "breakfast", image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Sunrise Salad", category: "breakfast", image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Pasta", category: "lunch", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Burger", category: "lunch", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Pizza", category: "dinner", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Steak", category: "dinner", image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Cupcakes", category: "dessert", image: "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Berry Tart", category: "dessert", image: "https://images.unsplash.com/photo-1464306076886-da185f6a9d8a?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Tacos", category: "dinner", image: "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Fruit Bowl", category: "breakfast", image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Sushi", category: "lunch", image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1200&q=80" },
+        { title: "Fresh Dessert", category: "dessert", image: "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1200&q=80" }
       ];
 
-      function randomFoodImage() {
-        const randomIndex = Math.floor(Math.random() * foodImages.length);
-        return foodImages[randomIndex];
-      }
+      const filters = [
+        { label: "All", value: "all" },
+        { label: "Breakfast", value: "breakfast" },
+        { label: "Lunch", value: "lunch" },
+        { label: "Dinner", value: "dinner" },
+        { label: "Dessert", value: "dessert" }
+      ];
 
-      function loadHeroImage() {
-        const hero = document.getElementById("heroImage");
-        hero.style.backgroundImage = `url('${randomFoodImage()}')`;
-      }
+      const state = {
+        activeFilter: "all",
+        darkMode: false
+      };
 
-      function loadGallery() {
-        const gallery = document.getElementById("gallery");
-        gallery.innerHTML = "";
-
-        for (let i = 0; i < 9; i++) {
-          const card = document.createElement("article");
-          card.className = "card";
-          card.innerHTML = `
-            <div class="image" style="background-image: url('${randomFoodImage()}');"></div>
-            <div class="meta">
-              <h2>Food</h2>
-              <p>Fresh and delicious.</p>
-            </div>
-          `;
-          gallery.appendChild(card);
+      function shuffle(array) {
+        const copy = [...array];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
         }
+        return copy;
       }
 
-      window.addEventListener("load", () => {
-        loadHeroImage();
-        loadGallery();
+      function getVisibleItems() {
+        return state.activeFilter === "all"
+          ? foodItems
+          : foodItems.filter((item) => item.category === state.activeFilter);
+      }
+
+      function renderFilters() {
+        const filterContainer = document.getElementById("filters");
+        filterContainer.innerHTML = filters
+          .map(
+            (filter) => `
+              <button
+                class="chip ${state.activeFilter === filter.value ? "active" : ""}"
+                data-filter="${filter.value}"
+                type="button"
+              >
+                ${filter.label}
+              </button>
+            `
+          )
+          .join("");
+
+        filterContainer.querySelectorAll(".chip").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.activeFilter = button.dataset.filter;
+            renderFilters();
+            renderGallery();
+          });
+        });
+      }
+
+      function renderGallery() {
+        const gallery = document.getElementById("gallery");
+        const visibleItems = getVisibleItems();
+
+        gallery.innerHTML = visibleItems
+          .map(
+            (item) => `
+              <article class="card" data-title="${item.title}" data-image="${item.image}">
+                <div class="image" style="background-image: url('${item.image}')"></div>
+                <div class="meta">
+                  <h2>${item.title}</h2>
+                  <p>${item.category}</p>
+                </div>
+              </article>
+            `
+          )
+          .join("");
+
+        gallery.querySelectorAll(".card").forEach((card) => {
+          card.addEventListener("click", () => {
+            openLightbox(card.dataset.title, card.dataset.image);
+          });
+        });
+      }
+
+      function openLightbox(title, image) {
+        const lightbox = document.getElementById("lightbox");
+        const modalImage = document.getElementById("modalImage");
+        const modalTitle = document.getElementById("modalTitle");
+
+        modalImage.style.backgroundImage = `url('${image}')`;
+        modalTitle.textContent = title;
+        lightbox.classList.add("open");
+      }
+
+      function closeLightbox() {
+        document.getElementById("lightbox").classList.remove("open");
+      }
+
+      function updateTheme() {
+        document.body.classList.toggle("dark", state.darkMode);
+        const themeBtn = document.getElementById("themeToggle");
+        themeBtn.textContent = state.darkMode ? "Light" : "Dark";
+      }
+
+      function refreshGallery() {
+        const reordered = shuffle(foodItems);
+        const visibleItems = state.activeFilter === "all"
+          ? reordered
+          : reordered.filter((item) => item.category === state.activeFilter);
+
+        const gallery = document.getElementById("gallery");
+        gallery.innerHTML = visibleItems
+          .map(
+            (item) => `
+              <article class="card" data-title="${item.title}" data-image="${item.image}">
+                <div class="image" style="background-image: url('${item.image}')"></div>
+                <div class="meta">
+                  <h2>${item.title}</h2>
+                  <p>${item.category}</p>
+                </div>
+              </article>
+            `
+          )
+          .join("");
+
+        gallery.querySelectorAll(".card").forEach((card) => {
+          card.addEventListener("click", () => {
+            openLightbox(card.dataset.title, card.dataset.image);
+          });
+        });
+
+        const heroImage = document.getElementById("heroImage");
+        heroImage.style.backgroundImage = `url('${visibleItems[0].image}')`;
+      }
+
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        state.darkMode = !state.darkMode;
+        updateTheme();
       });
+
+      document.getElementById("refreshBtn").addEventListener("click", () => {
+        refreshGallery();
+      });
+
+      document.getElementById("closeModal").addEventListener("click", closeLightbox);
+
+      document.getElementById("lightbox").addEventListener("click", (event) => {
+        if (event.target === event.currentTarget) closeLightbox();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeLightbox();
+      });
+
+      function init() {
+        const heroImage = document.getElementById("heroImage");
+        heroImage.style.backgroundImage = `url('${foodItems[0].image}')`;
+        renderFilters();
+        renderGallery();
+        updateTheme();
+      }
+
+      init();
     </script>
   </body>
 </html>
